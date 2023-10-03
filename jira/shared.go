@@ -40,7 +40,26 @@ func projectRoleAPIEndpoint(projectKey string) string {
 
 func filterPermissionEndpoint(filterID string) string {
 	return fmt.Sprintf("%s/%s/permission", filterAPIEndpoint, filterID)
+}
 
+func customFieldContextEndpoint(customFieldID string) string {
+	return fmt.Sprintf("/rest/api/2/field/%s/context", customFieldID)
+}
+
+func customFieldContextUpdateEndpoint(customFieldID string, contextID string) string {
+	return fmt.Sprintf("/rest/api/2/field/%s/context/%s", customFieldID, contextID)
+}
+
+func customFieldContextOptionsEndpoint(customFieldID string, contextID string) string {
+	return fmt.Sprintf("/rest/api/2/field/%s/context/%s/option", customFieldID, contextID)
+}
+
+func customFieldContextOptionsReorderEndpoint(customFieldID string, contextID string) string {
+	return fmt.Sprintf("/rest/api/2/field/%s/context/%s/option/move", customFieldID, contextID)
+}
+
+func customFieldContextOptionsDeleteEndpoint(customFieldID string, contextID string, optionID string) string {
+	return fmt.Sprintf("/rest/api/2/field/%s/context/%s/option/%s", customFieldID, contextID, optionID)
 }
 
 type resourceNotFoundError struct {

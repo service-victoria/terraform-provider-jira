@@ -5,11 +5,11 @@ import (
 	"time"
 
 	jira "github.com/andygrunwald/go-jira"
-	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/pkg/errors"
 )
 
-// FieldRequest The struct sent to the JIRA instance to create a new Project
+// FieldRequest The struct sent to the JIRA instance to create a new Field
 type FieldRequest struct {
 	Name                string `json:"name,omitempty" structs:"name,omitempty"`
 	Description         string `json:"description,omitempty" structs:"description,omitempty"`
