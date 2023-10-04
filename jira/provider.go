@@ -57,6 +57,7 @@ func Provider() *schema.Provider {
 			"jira_custom_field":         resourceCustomField(),
 			"jira_custom_field_context": resourceCustomFieldContext(),
 			"jira_custom_field_options": resourceCustomFieldOptions(),
+			"jira_custom_field_option":  resourceCustomFieldOption(),
 			"jira_issue_type_scheme":    resourceIssueTypeScheme(),
 		},
 		DataSourcesMap: map[string]*schema.Resource{

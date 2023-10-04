@@ -50,6 +50,10 @@ func customFieldContextUpdateEndpoint(customFieldID string, contextID string) st
 	return fmt.Sprintf("/rest/api/2/field/%s/context/%s", customFieldID, contextID)
 }
 
+func customFieldOptionEndpoint(customFieldID string, contextID string, optionID string) string {
+	return fmt.Sprintf("/rest/api/2/field/%s/context/%s/option?optionId=%s", customFieldID, contextID, optionID)
+}
+
 func customFieldContextOptionsEndpoint(customFieldID string, contextID string) string {
 	return fmt.Sprintf("/rest/api/2/field/%s/context/%s/option", customFieldID, contextID)
 }
