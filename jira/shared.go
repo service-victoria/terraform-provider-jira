@@ -42,28 +42,36 @@ func filterPermissionEndpoint(filterID string) string {
 	return fmt.Sprintf("%s/%s/permission", filterAPIEndpoint, filterID)
 }
 
+func customFieldSearchEndpoint(customFieldID string) string {
+	return fmt.Sprintf("%s/search?type=custom&expand=searcherKey&id=%s", fieldAPIEndpoint, customFieldID)
+}
+
+func customFieldEndpoint(customFieldID string) string {
+	return fmt.Sprintf("%s/%s", fieldAPIEndpoint, customFieldID)
+}
+
 func customFieldContextEndpoint(customFieldID string) string {
-	return fmt.Sprintf("/rest/api/2/field/%s/context", customFieldID)
+	return fmt.Sprintf("%s/%s/context", fieldAPIEndpoint, customFieldID)
 }
 
 func customFieldContextUpdateEndpoint(customFieldID string, contextID string) string {
-	return fmt.Sprintf("/rest/api/2/field/%s/context/%s", customFieldID, contextID)
+	return fmt.Sprintf("%s/%s/context/%s", fieldAPIEndpoint, customFieldID, contextID)
 }
 
 func customFieldOptionEndpoint(customFieldID string, contextID string, optionID string) string {
-	return fmt.Sprintf("/rest/api/2/field/%s/context/%s/option?optionId=%s", customFieldID, contextID, optionID)
+	return fmt.Sprintf("%s/%s/context/%s/option?optionId=%s", fieldAPIEndpoint, customFieldID, contextID, optionID)
 }
 
 func customFieldContextOptionsEndpoint(customFieldID string, contextID string) string {
-	return fmt.Sprintf("/rest/api/2/field/%s/context/%s/option", customFieldID, contextID)
+	return fmt.Sprintf("%s/%s/context/%s/option", fieldAPIEndpoint, customFieldID, contextID)
 }
 
 func customFieldContextOptionsReorderEndpoint(customFieldID string, contextID string) string {
-	return fmt.Sprintf("/rest/api/2/field/%s/context/%s/option/move", customFieldID, contextID)
+	return fmt.Sprintf("%s/%s/context/%s/option/move", fieldAPIEndpoint, customFieldID, contextID)
 }
 
 func customFieldContextOptionsDeleteEndpoint(customFieldID string, contextID string, optionID string) string {
-	return fmt.Sprintf("/rest/api/2/field/%s/context/%s/option/%s", customFieldID, contextID, optionID)
+	return fmt.Sprintf("%s/%s/context/%s/option/%s", fieldAPIEndpoint, customFieldID, contextID, optionID)
 }
 
 type resourceNotFoundError struct {

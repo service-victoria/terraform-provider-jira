@@ -1,11 +1,15 @@
 package jira
 
 import (
+	"fmt"
 	"log"
+	"strings"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/pkg/errors"
 )
+
+const ID_FORMAT_ERROR_MESSAGE = "ID is incorrectly formatted. Expected format is `field_id:context_id`"
 
 // FieldRequest The struct sent to the JIRA instance to create a new Field
 type FieldContextRequest struct {
@@ -42,6 +46,12 @@ func resourceCustomFieldContext() *schema.Resource {
 			"field_id": &schema.Schema{
 				Type:     schema.TypeString,
 				Required: true,
+			},
+			"context_id": &schema.Schema{
+				Type:     schema.TypeString,
+				Required: false,
+				Optional: false,
+				Computed: true,
 			},
 			"description": &schema.Schema{
 				Type:     schema.TypeString,
@@ -92,7 +102,8 @@ func resourceCustomFieldContextCreate(d *schema.ResourceData, m interface{}) err
 		return errors.Wrap(err, "Creating Jira Field Context failed")
 	}
 
-	d.SetId(returnedContext.Id)
+	d.Set("context_id", returnedContext.Id)
+	d.SetId(fmt.Sprintf("%s:%s", fieldId, returnedContext.Id))
 
 	return resourceCustomFieldContextRead(d, m)
 }
@@ -100,23 +111,26 @@ func resourceCustomFieldContextCreate(d *schema.ResourceData, m interface{}) err
 func resourceCustomFieldContextRead(d *schema.ResourceData, m interface{}) error {
 	config := m.(*Config)
 
-	fieldId := d.Get("field_id").(string)
+	ids := strings.Split(d.Id(), ":")
+	if len(ids) != 2 {
+		return errors.New(ID_FORMAT_ERROR_MESSAGE)
+	}
+	fieldId, contextId := ids[0], ids[1]
+
+	if fieldId == "" || contextId == "" {
+		return errors.New(ID_FORMAT_ERROR_MESSAGE)
+	}
+
 	returnedContexts := new(FieldContextsResponse)
 	err := request(config.jiraClient, "GET", customFieldContextEndpoint(fieldId), nil, returnedContexts)
 	if err != nil {
 		return errors.Wrap(err, "Fetching Jira Field Contexts failed")
 	}
 
-	id := d.Id()
-
-	if id == "" {
-		return errors.New("Context ID not set")
-	} else {
-		for _, context := range returnedContexts.Values {
-			if context.Id == id {
-				log.Printf("Context found(id=%s), setting values", context.Id)
-				setContextFields(d, context)
-			}
+	for _, context := range returnedContexts.Values {
+		if context.Id == contextId {
+			log.Printf("Context found(id=%s), setting values", context.Id)
+			setContextFields(d, context, fieldId)
 		}
 	}
 
@@ -131,8 +145,9 @@ func resourceCustomFieldContextUpdate(d *schema.ResourceData, m interface{}) err
 		Description: d.Get("description").(string),
 	}
 
-	fieldId := d.Get("field_id").(string)
-	err := request(config.jiraClient, "PUT", customFieldContextUpdateEndpoint(fieldId, d.Id()), context, nil)
+	ids := strings.Split(d.Id(), ":")
+	fieldId, contextId := ids[0], ids[1]
+	err := request(config.jiraClient, "PUT", customFieldContextUpdateEndpoint(fieldId, contextId), context, nil)
 	if err != nil {
 		return errors.Wrap(err, "Updating Jira Field Context failed")
 	}
@@ -143,8 +158,9 @@ func resourceCustomFieldContextUpdate(d *schema.ResourceData, m interface{}) err
 func resourceCustomFieldContextDelete(d *schema.ResourceData, m interface{}) error {
 	config := m.(*Config)
 
-	fieldId := d.Get("field_id").(string)
-	err := request(config.jiraClient, "DELETE", customFieldContextUpdateEndpoint(fieldId, d.Id()), nil, nil)
+	ids := strings.Split(d.Id(), ":")
+	fieldId, contextId := ids[0], ids[1]
+	err := request(config.jiraClient, "DELETE", customFieldContextUpdateEndpoint(fieldId, contextId), nil, nil)
 	if err != nil {
 		return errors.Wrap(err, "Updating Jira Field Context failed")
 	}

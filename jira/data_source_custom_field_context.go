@@ -1,6 +1,7 @@
 package jira
 
 import (
+	"fmt"
 	"log"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
@@ -35,6 +36,10 @@ func dataSourceCustomFieldContext() *schema.Resource {
 				Type:     schema.TypeString,
 				Required: true,
 			},
+			"context_id": &schema.Schema{
+				Type:     schema.TypeString,
+				Optional: true,
+			},
 			"name": &schema.Schema{
 				Type:     schema.TypeString,
 				Computed: true,
@@ -65,29 +70,34 @@ func dataSourceCustomFieldContextRead(d *schema.ResourceData, m interface{}) err
 		return errors.Wrap(err, "Fetching Jira Field Contexts failed")
 	}
 
-	id := d.Id()
+	contextId := d.Get("context_id").(string)
 
-	if id != "" {
+	var foundContext FieldContext
+	if contextId != "" {
 		for _, context := range returnedContexts.Values {
-			if context.Id == id {
-				log.Printf("Context found(id=%s), setting values", context.Id)
-				setContextFields(d, context)
+			if context.Id == contextId {
+				foundContext = context
 			}
 		}
-	} else if len(returnedContexts.Values) != 1 {
-		return errors.New("Unable to determine context from field ID. Are there multiple contexts defined?")
-	} else {
-		context := returnedContexts.Values[0]
-		log.Printf("Context found(id=%s), setting values", context.Id)
-		setContextFields(d, context)
+	} else if len(returnedContexts.Values) == 1 {
+		foundContext = returnedContexts.Values[0]
 	}
+
+	if foundContext == (FieldContext{}) {
+		return errors.New("Unable to determine context from field ID. Are there multiple contexts defined?")
+	}
+
+	log.Printf("Context found(id=%s), setting values", foundContext.Id)
+	d.SetId(fmt.Sprintf("%s:%s", fieldId, foundContext.Id))
+	setContextFields(d, foundContext, fieldId)
 
 	return nil
 }
 
-func setContextFields(d *schema.ResourceData, context FieldContext) {
-	d.SetId(context.Id)
+func setContextFields(d *schema.ResourceData, context FieldContext, fieldId string) {
 	d.Set("name", context.Name)
+	d.Set("field_id", fieldId)
+	d.Set("context_id", context.Id)
 	d.Set("description", context.Description)
 	d.Set("is_any_issue_type", context.IsAnyIssueType)
 	d.Set("is_global_context", context.IsGlobalContext)
