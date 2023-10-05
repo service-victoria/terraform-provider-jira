@@ -90,7 +90,7 @@ func resourceCustomFieldRead(d *schema.ResourceData, m interface{}) error {
 
 	field, _, err := getCustomFieldById(config.jiraClient, d.Id())
 	if err != nil {
-		return errors.Wrap(err, "getting jira field failed")
+		return errors.Wrap(err, "Getting jira field failed")
 	}
 
 	log.Printf("Read custom field (id=%s)", field.Id)

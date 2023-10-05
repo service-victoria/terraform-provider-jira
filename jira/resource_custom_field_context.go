@@ -14,7 +14,7 @@ const ID_FORMAT_ERROR_MESSAGE = "ID is incorrectly formatted. Expected format is
 // FieldRequest The struct sent to the JIRA instance to create a new Field
 type FieldContextRequest struct {
 	Name         string   `json:"name,omitempty" structs:"name,omitempty"`
-	Description  string   `json:"description,omitempty" structs:"description,omitempty"`
+	Description  string   `json:"description" structs:"description"`
 	IssueTypeIds []string `json:"issueTypeIds,omitempty" structs:"issueTypeIds,omitempty"`
 	ProjectIds   []string `json:"projectIds,omitempty" structs:"projectIds,omitempty"`
 }
