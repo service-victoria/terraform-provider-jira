@@ -1,5 +1,5 @@
 #!/bin/bash
-set -xeuo pipefail
+set -euo pipefail
 # Assumes dist folder exists and is populated with build artifacts
 # Requires GPG_FINGERPRINT and TERRAFORM_CLOUD_TOKEN
 VERSION=$(jq -r '.version' dist/metadata.json)

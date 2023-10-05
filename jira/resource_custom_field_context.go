@@ -88,11 +88,23 @@ func resourceCustomFieldContext() *schema.Resource {
 func resourceCustomFieldContextCreate(d *schema.ResourceData, m interface{}) error {
 	config := m.(*Config)
 
+	resourceIssueTypeIds := d.Get("issue_type_ids").(*schema.Set).List()
+	issueTypeIds := make([]string, 0, len(resourceIssueTypeIds))
+	for _, id := range resourceIssueTypeIds {
+		issueTypeIds = append(issueTypeIds, id.(string))
+	}
+
+	resourceProjectIds := d.Get("project_ids").(*schema.Set).List()
+	projectIds := make([]string, 0, len(resourceProjectIds))
+	for _, id := range resourceProjectIds {
+		projectIds = append(projectIds, id.(string))
+	}
+
 	context := &FieldContextRequest{
 		Name:         d.Get("name").(string),
 		Description:  d.Get("description").(string),
-		IssueTypeIds: d.Get("issue_type_ids").([]string),
-		ProjectIds:   d.Get("project_ids").([]string),
+		IssueTypeIds: issueTypeIds,
+		ProjectIds:   projectIds,
 	}
 
 	fieldId := d.Get("field_id").(string)
