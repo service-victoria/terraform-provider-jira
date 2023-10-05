@@ -1,5 +1,5 @@
 #!/bin/bash
-
+set -xeuo pipefail
 # Assumes dist folder exists and is populated with build artifacts
 # Requires GPG_FINGERPRINT and TERRAFORM_CLOUD_TOKEN
 VERSION=$(jq -r '.version' dist/metadata.json)
@@ -54,7 +54,7 @@ jq -c '.[] | select(.type=="Archive")' dist/artifacts.json | while read i; do
     \"attributes\": {
       \"os\": \"$(jq -r '.goos' <<< $i)\",
       \"arch\": \"$(jq -r '.goarch' <<< $i)\",
-      \"shasum\": \"$(jq -r '.extra.Checksum' <<< $i)\",
+      \"shasum\": \"$(jq -r '.extra.Checksum' <<< $i | sed -e 's/^sha256://')\",
       \"filename\": \"$(jq -r '.name' <<< $i)\"
     }
   }
