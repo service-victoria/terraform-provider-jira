@@ -39,6 +39,7 @@ func dataSourceCustomFieldContext() *schema.Resource {
 			"context_id": &schema.Schema{
 				Type:     schema.TypeString,
 				Optional: true,
+				Computed: true,
 			},
 			"name": &schema.Schema{
 				Type:     schema.TypeString,
