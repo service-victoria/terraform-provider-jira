@@ -45,5 +45,5 @@ jobs:
       - name: Publish Provider
         run: ./scripts/publish-version.sh
         env:
-          GPG_FINGERPRINT: ${{ steps.import_gpg.outputs.fingerprint }}
+          GPG_KEY_ID: ${{ steps.import_gpg.outputs.keyid }}
           TERRAFORM_CLOUD_TOKEN: ${{ secrets.TERRAFORM_CLOUD_TOKEN }}
