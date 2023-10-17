@@ -20,6 +20,9 @@ const groupUserAPIEndpoint = "/rest/api/2/group/user"
 const issueLinkAPIEndpoint = "/rest/api/2/issueLink"
 const issueLinkTypeAPIEndpoint = "/rest/api/2/issueLinkType"
 const issueTypeAPIEndpoint = "/rest/api/2/issuetype"
+const issueTypeSchemeAPIEndpoint = "/rest/api/2/issuetypescheme"
+const issueTypeSchemeMappingAPIEndpoint = "/rest/api/2/issuetypescheme/mapping"
+const fieldAPIEndpoint = "/rest/api/2/field"
 
 const projectAPIEndpoint = "/rest/api/2/project"
 const projectCategoryAPIEndpoint = "/rest/api/2/projectCategory"
@@ -37,7 +40,38 @@ func projectRoleAPIEndpoint(projectKey string) string {
 
 func filterPermissionEndpoint(filterID string) string {
 	return fmt.Sprintf("%s/%s/permission", filterAPIEndpoint, filterID)
+}
 
+func customFieldSearchEndpoint(customFieldID string) string {
+	return fmt.Sprintf("%s/search?type=custom&expand=searcherKey&id=%s", fieldAPIEndpoint, customFieldID)
+}
+
+func customFieldEndpoint(customFieldID string) string {
+	return fmt.Sprintf("%s/%s", fieldAPIEndpoint, customFieldID)
+}
+
+func customFieldContextEndpoint(customFieldID string) string {
+	return fmt.Sprintf("%s/%s/context", fieldAPIEndpoint, customFieldID)
+}
+
+func customFieldContextUpdateEndpoint(customFieldID string, contextID string) string {
+	return fmt.Sprintf("%s/%s/context/%s", fieldAPIEndpoint, customFieldID, contextID)
+}
+
+func customFieldOptionEndpoint(customFieldID string, contextID string, optionID string) string {
+	return fmt.Sprintf("%s/%s/context/%s/option?optionId=%s", fieldAPIEndpoint, customFieldID, contextID, optionID)
+}
+
+func customFieldContextOptionsEndpoint(customFieldID string, contextID string) string {
+	return fmt.Sprintf("%s/%s/context/%s/option", fieldAPIEndpoint, customFieldID, contextID)
+}
+
+func customFieldContextOptionsReorderEndpoint(customFieldID string, contextID string) string {
+	return fmt.Sprintf("%s/%s/context/%s/option/move", fieldAPIEndpoint, customFieldID, contextID)
+}
+
+func customFieldContextOptionsDeleteEndpoint(customFieldID string, contextID string, optionID string) string {
+	return fmt.Sprintf("%s/%s/context/%s/option/%s", fieldAPIEndpoint, customFieldID, contextID, optionID)
 }
 
 type resourceNotFoundError struct {

@@ -67,6 +67,7 @@ resource "jira_project" "project_shared" {
 
 ### Read-Only
 
+- `archived` (Boolean)
 - `id` (String) The ID of this resource.
 - `project_id` (Number)
 
