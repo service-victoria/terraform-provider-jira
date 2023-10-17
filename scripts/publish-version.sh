@@ -1,7 +1,7 @@
 #!/bin/bash
 set -euo pipefail
 # Assumes dist folder exists and is populated with build artifacts
-# Requires GPG_KEY_ID and TERRAFORM_CLOUD_TOKEN
+# Requires GPG_FINGERPRINT and TERRAFORM_CLOUD_TOKEN
 VERSION=$(jq -r '.version' dist/metadata.json)
 
 # Set GPG key used for signing
@@ -14,7 +14,7 @@ gpg_response=$(curl --silent --location 'https://app.terraform.io/api/registry/p
         \"type\": \"gpg-keys\",
         \"attributes\": {
             \"namespace\": \"servicevic\",
-            \"ascii-armor\": $(gpg --armor --export $GPG_KEY_ID | jq -R -s '.')
+            \"ascii-armor\": $(gpg --armor --export $GPG_FINGERPRINT | jq -R -s '.')
         }
     }
 }")
@@ -29,7 +29,7 @@ version_response=$(curl --silent --location "https://app.terraform.io/api/v2/org
         \"type\": \"registry-provider-versions\",
         \"attributes\": {
             \"version\": \"$VERSION\",
-            \"key-id\": \"$GPG_KEY_ID\",
+            \"key-id\": \"$(gpg -k --with-colons $GPG_FINGERPRINT | awk -F: '/^pub:/ { print $5 }')\",
             \"protocols\": [\"6.0\"]
         }
     }
