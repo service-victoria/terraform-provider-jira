@@ -68,6 +68,10 @@ func resourceCustomFieldOptionsRead(d *schema.ResourceData, m interface{}) error
 	currentOptions := new(GetFieldOptionsResponse)
 	err := request(config.jiraClient, "GET", customFieldContextOptionsEndpoint(fieldId, contextId), nil, currentOptions)
 	if err != nil {
+		if errors.Is(err, ResourceNotFoundError) {
+			d.SetId("")
+			return nil
+		}
 		return errors.Wrap(err, "Fetching Jira Field Context Options failed")
 	}
 
